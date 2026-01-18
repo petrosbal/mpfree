@@ -1,0 +1,12 @@
+[package]
+name = "mpfree"
+version = "0.1.0-alpha"
+edition = "2024"
+
+[dependencies]
+eframe = { version = "0.28", default-features = false, features = ["accesskit", "default_fonts", "glow"] }
+
+[profile.release]
+opt-level = "z"
+strip = true
+lto = true
