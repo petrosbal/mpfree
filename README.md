@@ -1,5 +1,7 @@
 # MpFree
 
+![MpFree Logo](./assets/mpfree_logo.png)
+
 **MpFree** is a minimalist YouTube-to-MP3 downloader built with **Rust** and the **egui** framework. 
 
 ---
