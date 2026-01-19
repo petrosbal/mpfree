@@ -1,3 +1,9 @@
+// MpFree: Lightweight youtube-to-mp3 converter built with Rust and egui
+// Copyright (C) 2026  Petros Baloglou
+// This program comes with ABSOLUTELY NO WARRANTY.
+// This is free software, and you are welcome to redistribute it
+// under certain conditions; see LICENSE for details.
+
 #![windows_subsystem = "windows"]
 
 use eframe::egui;
