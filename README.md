@@ -6,6 +6,7 @@
 
 ## Features
 * **Native Performance:** Built for speed, memory safety and minimal overhead compared to interpreted alternatives.
+* **Multi-Environment Support:** Available both for Windows and Linux. 
 * **Minimalist Interface:** Clean, distraction-free GUI, without ads or bloat.
 * **Thread-Safe Downloads:** Uses multi-threading to ensure UI responsiveness.
 * **Real-Time Feedback:** Uses MPSC channels for cross-thread status updates.
