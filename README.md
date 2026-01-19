@@ -8,15 +8,16 @@
 * **Native Performance:** Built for speed, memory safety and minimal overhead compared to interpreted alternatives.
 * **Multi-Environment Support:** Available both for Windows and Linux. 
 * **Minimalist Interface:** Clean, distraction-free GUI, without ads or bloat.
-* **Thread-Safe Downloads:** Uses multi-threading to ensure UI responsiveness.
-* **Real-Time Feedback:** Uses MPSC channels for cross-thread status updates.
+* **Zero-Dependency Design:** Binaries are bundled directly within the executable, for a plug-and-play user experience.
 
 > Also visit the [Changelog](CHANGELOG.md) for a list of future features and updates.
 
 ### Technical Implementation
-* **Async Architecture:** Asynchronous background processing ensures long-running downloads don't freeze the main thread.
-* **Zero-Dependency Design:** `yt-dlp` and `FFmpeg` are bundled directly within the executable, for a plug-and-play user experience.
 * **Rust Ecosystem:** Developed using modern crates for robust error handling and efficient message passing.
+* **Real-Time Feedback:** Uses MPSC channels for cross-thread status updates.
+* **Async Architecture:** Asynchronous background processing ensures long-running downloads don't freeze the main thread.
+
+
 
 
 
