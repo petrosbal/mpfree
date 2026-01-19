@@ -68,13 +68,14 @@ struct MpFreeApp {
     status: String,
     tx: mpsc::Sender<String>,
     rx: mpsc::Receiver<String>,
+    download_path: Option<PathBuf>,
 }
 
 impl MpFreeApp {
     pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
+        egui_extras::install_image_loaders(&_cc.egui_ctx);
+
         let (tx, rx) = mpsc::channel();
-        
-        // Αρχικοποίηση των binaries κατά το startup
         let paths = AppPaths::init();
 
         Self {
@@ -83,6 +84,7 @@ impl MpFreeApp {
             status: "Ready".to_string(),
             tx,
             rx,
+            download_path: None,
         }
     }
 
@@ -91,6 +93,7 @@ impl MpFreeApp {
         let tx = self.tx.clone();
         let yt_path = self.paths.ytdlp.clone();
         let ff_path = self.paths.ffmpeg.clone();
+        let download_path = self.download_path.clone();
 
         std::thread::spawn(move || {
             let mut cmd = Command::new(yt_path);
@@ -101,25 +104,24 @@ impl MpFreeApp {
                 cmd.creation_flags(0x08000000); // CREATE_NO_WINDOW
             }
 
+            let output_template = match download_path {
+                Some(p) => p.join("%(title)s.%(ext)s").to_string_lossy().to_string(),
+                None => "%(title)s.%(ext)s".to_string(),
+            };
             let result = cmd
                 .args([
                     "-x", 
                     "--audio-format", "mp3",
                     "--ffmpeg-location", ff_path.to_str().unwrap(),
-                    "-o", "%(title)s.%(ext)s"
+                    "-o", &output_template,
                 ])
                 .arg(url)
                 .output();
 
             let msg = match result {
-                Ok(output) if output.status.success() => {
-                    "Download and conversion completed.".to_string()
-                }
-                Ok(output) => {
-                    let err_msg = String::from_utf8_lossy(&output.stderr);
-                    format!("yt-dlp error: {}", err_msg)
-                }
-                Err(e) => format!("Failed to start process: {}", e),
+                Ok(output) if output.status.success() => "Download and conversion completed.".to_string(),
+                Ok(output) => format!("yt-dlp error: {}", String::from_utf8_lossy(&output.stderr)),
+                Err(e) => format!("Failed to start: {}", e),
             };
             let _ = tx.send(msg);
         });
@@ -130,27 +132,78 @@ impl MpFreeApp {
 
 impl eframe::App for MpFreeApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-
+        
+        ctx.set_cursor_icon(egui::CursorIcon::Default);
         if let Ok(msg) = self.rx.try_recv() {
             self.status = msg;
             ctx.request_repaint();
         }
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.vertical_centered(|ui| {
-                ui.add_space(20.0);
-                ui.heading("MpFree");
-                ui.add_space(20.0);
+            ui.with_layout(egui::Layout::top_down(egui::Align::Center), |ui| {
+                ui.add_space(15.0);
+                ui.add(
+                    egui::Image::new(egui::include_image!("../assets/mpfree_logo.png"))
+                        .max_width(200.0)
+                );
+                ui.add_space(15.0);
 
-                let edit = ui.add(egui::TextEdit::singleline(&mut self.url)
+                // 1. URL input
+                ui.add(egui::TextEdit::singleline(&mut self.url)
                     .hint_text("Paste YouTube URL here...")
                     .desired_width(350.0));
 
-                if edit.changed() { self.status = "Ready".to_string(); }
+                ui.add_space(10.0);
 
-                ui.add_space(20.0);
+                // 2. folder selection
+                ui.horizontal(|ui| {
+                    let button_width = 115.0; // width of the "Select Folder" button
+                    let spacing = 8.0; // space between button and label
+                    let max_label_width = 180.0; // maximum width for the path label
+                    let font_id = egui::FontId::proportional(13.0);
 
-                if ui.button("Download MP3").clicked() {
+                    // determine display path
+                    let display_path = match &self.download_path {
+                        Some(p) => p.to_string_lossy().to_string(),
+                        None => "Default folder".to_string(),
+                    };
+
+                    // measure label width
+                    let galley = ui.painter().layout_no_wrap(
+                        display_path.clone(), 
+                        font_id.clone(), 
+                        ui.visuals().text_color()
+                    );
+                    let actual_label_width = galley.rect.width().min(max_label_width);
+
+                    // calculate left padding for centering
+                    let total_row_width = button_width + spacing + actual_label_width;
+                    let left_padding = (ui.available_width() - total_row_width) / 2.0;
+                    if left_padding > 0.0 {
+                        ui.add_space(left_padding);
+                    }
+                    
+                    // select folder button
+                    if ui.add_sized([button_width, 22.0], egui::Button::new("📁 Select Folder")).clicked() {
+                        if let Some(path) = rfd::FileDialog::new().pick_folder() {
+                            self.download_path = Some(path);
+                        }
+                        ctx.request_repaint();
+                    }
+
+                    ui.add_space(spacing);
+
+                    ui.add_sized(
+                        [actual_label_width, 22.0],
+                        egui::Label::new(egui::RichText::new(display_path).font(font_id))
+                            .truncate()
+                    );
+                });
+
+                ui.add_space(10.0);
+
+                // 3. download button
+                if ui.button(egui::RichText::new("Download MP3").heading()).clicked() {
                     if self.url.is_empty() {
                         self.status = "Please enter a URL first.".to_string();
                     } else {
@@ -159,7 +212,7 @@ impl eframe::App for MpFreeApp {
                     }
                 }
 
-                ui.add_space(20.0);
+                ui.add_space(15.0);
                 ui.label(egui::RichText::new(&self.status).strong());
             });
         });
@@ -169,15 +222,16 @@ impl eframe::App for MpFreeApp {
 // ===== MAIN ENTRY POINT =====
 
 fn main() -> eframe::Result {
+    let size = [800.0, 400.0];
+
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_inner_size([400.0, 220.0])
-            .with_resizable(false),
+            .with_inner_size(size),
         ..Default::default()
     };
     
     eframe::run_native(
-        "MpFree v1.0",
+        "MpFree",
         options,
         Box::new(|cc| Ok(Box::new(MpFreeApp::new(cc)))),
     )
