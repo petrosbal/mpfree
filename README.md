@@ -2,8 +2,6 @@
 
 **MpFree** is a minimalist YouTube-to-MP3 downloader built with **Rust** and the **egui** framework. 
 
-
-
 ## Features
 * **Native Performance:** Built for speed, memory safety and minimal overhead compared to interpreted alternatives.
 * **Multi-Environment Support:** Available both for Windows and Linux. 
@@ -16,9 +14,6 @@
 * **Rust Ecosystem:** Developed using modern crates for robust error handling and efficient message passing.
 * **Real-Time Feedback:** Uses MPSC channels for cross-thread status updates.
 * **Async Architecture:** Asynchronous background processing ensures long-running downloads don't freeze the main thread.
-
-
-
 
 
 ## Installation Guide
