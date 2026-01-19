@@ -1,3 +1,6 @@
+// MpFree: Lightweight youtube-to-mp3 converter built with Rust and egui
+// Copyright (C) 2026  Petros Baloglou
+
 use eframe::egui;
 use crate::app::MpFreeApp;
 
