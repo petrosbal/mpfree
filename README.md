@@ -5,8 +5,8 @@
 ## Features
 * **Native Performance:** Built for speed, memory safety and minimal overhead compared to interpreted alternatives.
 * **Multi-Environment Support:** Available both for Windows and Linux. 
+* **Single Executable:** No installation or dependencies required; just download and run (Plug-and-play application).
 * **Minimalist Interface:** Clean, distraction-free GUI, without ads or bloat.
-* **Zero-Dependency Design:** Binaries are bundled directly within the executable, for a plug-and-play user experience.
 
 > Also visit the [Changelog](CHANGELOG.md) for a list of future features and updates.
 
