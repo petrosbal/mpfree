@@ -2,7 +2,7 @@
 
 **MpFree** is a minimalist YouTube-to-MP3 downloader built with **Rust** and the **egui** framework. 
 
----
+
 
 ## Features
 * **Native Performance:** Built for speed, memory safety and minimal overhead compared to interpreted alternatives.
@@ -11,27 +11,14 @@
 * **Thread-Safe Downloads:** Uses multi-threading to ensure UI responsiveness.
 * **Real-Time Feedback:** Uses MPSC channels for cross-thread status updates.
 
+> Also visit the [Changelog](CHANGELOG.md) for a list of future features and updates.
+
 ### Technical Implementation
 * **Async Architecture:** Asynchronous background processing ensures long-running downloads don't freeze the main thread.
 * **Zero-Dependency Design:** `yt-dlp` and `FFmpeg` are bundled directly within the executable, for a plug-and-play user experience.
 * **Rust Ecosystem:** Developed using modern crates for robust error handling and efficient message passing.
 
----
 
-## Project Roadmap
-
-### *Coming soon...*
-* **Directory Picker:** Custom output folder selection using native dialogs.
-* **Real-time Progress Bar:** Visual percentage tracking for active downloads.
-* **FFmpeg Independency:** Native Rust audio conversion to eliminate FFmpeg dependency.
-* **Audio Quality Selector:** Toggle between 128kbps, 192kbps, and 320kbps.
-* **Metadata & ID3 Tags:** Automatic embedding of Title, Artist, and Album Art.
-* **Playlist Support:** Sequential processing of entire YouTube playlists.
-* **Input Validation:** URL cleaning and error handling.
-* **Auto-Updater:** Automated update checks for the application and downloader engine.
-* **GitHub Actions:** Automated CI/CD pipelines for Windows and Linux releases.
-
----
 
 ## Installation Guide
 
