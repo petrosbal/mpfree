@@ -1,8 +1,13 @@
 /target
-Cargo.lock
 **/*.rs.bk
-*_temp
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
 *.mp3
-*.log
+
 .DS_Store
-.vscode
+Thumbs.db
+*:Zone.Identifier

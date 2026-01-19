@@ -7,9 +7,15 @@ description = "Lightweight youtube-to-mp3 converter built with Rust and egui"
 license = "GPL-3.0-only"
 
 [dependencies]
-eframe = { version = "0.28", default-features = false, features = ["accesskit", "default_fonts", "glow"] }
+eframe = { version = "0.28", features = ["accesskit", "default_fonts", "glow"] }
+rfd = "0.15"
+image = "0.25"
+egui_extras = { version = "0.28", features = ["image"] }
 
 [profile.release]
 opt-level = "z"
 strip = true
 lto = true
+
+[build-dependencies]
+embed-resource = "2.5"
